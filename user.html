@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SmartBin</title>
+    <link rel="stylesheet" href="userStyle.css" />
+    <script
+      src="https://kit.fontawesome.com/40f7982ca7.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="icon" href="thaparlogo.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+        <nav>
+          <img src="thaparlogo.png" class="logo" />
+          <ul id="sidemenu">
+            <li><a href="#header">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Gallery</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="">Staff login</a></li>
+            <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
+          </ul>
+          <i class="fa-solid fa-ellipsis-vertical" onclick="openmenu()"></i>
+        </nav>
+        <div class="header-text">
+          <p>Thapar University</p>
+          <h1>Hi, I'm the <span>Smart Bin</span> <br />project</h1>
+        </div>
+      </div>
+    </div>
+    <!--------About section------->
+    <div id="about">
+      <div class="container">
+        <div class="row">
+          <div class="about-col-1">
+            <img src="thapar.jpeg" />
+          </div>
+          <div class="about-col-2">
+            <h1 class="sub-title">About Us</h1>
+            <p>
+              Welcome to SmartBin Solutions, where technology meets community
+              action for a cleaner future. At SmartBin, we're dedicated to
+              transforming waste management into a collaborative effort. Our
+              platform empowers communities and businesses to track and manage
+              every bin in real-time, enabling efficient waste collection and
+              contributing to a cleaner, healthier environment. Join us as we
+              redefine waste management. Together, let's take the first step
+              towards a greener future.
+            </p>
+            <div class="tab-titles">
+              <p class="tab-links active-link" onclick="opentab('skills')">
+                Targets
+              </p>
+              <p class="tab-links" onclick="opentab('experience')">
+                Achievments
+              </p>
+              <p class="tab-links" onclick="opentab('education')">
+                How can you help!
+              </p>
+            </div>
+            <!---targets-->
+            <div class="tab-contents active-tab" id="skills">
+              <ul>
+                <li>
+                  <span>Clean campus <br /></span>creating a safe environment
+                </li>
+                <li>
+                  <span>Easy management <br /></span>increasing management
+                  efficiency
+                </li>
+                <li>
+                  <span>Creating awareness <br /></span> education about waste
+                  disposal
+                </li>
+              </ul>
+            </div>
+            <!--achievments-->
+            <div class="tab-contents" id="education">
+              <ul>
+                <li>
+                  <span>.......<br /></span>----
+                </li>
+                <li>
+                  <span>......<br /></span>------
+                </li>
+                <li>
+                  <span>......<br /></span>
+                  ------
+                </li>
+              </ul>
+            </div>
+            <!--your contribution-->
+            <div class="tab-contents" id="experience">
+              <ul>
+                <li>
+                  <span>.......<br /></span>
+                  /////
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Locations-->
+    <div id="services">
+      <div class="container">
+        <h1>Smart Bin locations</h1>
+        <div class="services-list">
+          <div class="loc1">
+            <h2>COS</h2>
+            <h3>location 1</h3>
+            <h3>location 2</h3>
+            <h3>location 3</h3>
+          </div>
+
+          <div class="loc2">
+            <h2>Jaggi</h2>
+            <h3>location 1</h3>
+            <h3>location 2</h3>
+            <h3>location 3</h3>
+          </div>
+
+          <div class="loc3">
+            <h2>CSED Block</h2>
+            <h3>location 1</h3>
+            <h3>location 2</h3>
+            <h3>location 3</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--portfolio-->
+    <div id="portfolio">
+      <div class="container">
+        <h1 class="sub-title">Gallery</h1>
+        <!--webdev-->
+
+        <div class="work-list">
+          <!--gallery-->
+
+          <div class="work-list">
+            <div class="work">
+              <img
+                src="gallery1.jpeg"
+                alt="coming soon"
+                style="background-color: gray"
+              />
+            </div>
+            <div class="work">
+              <img src="" alt="coming soon" style="background-color: gray" />
+            </div>
+            <div class="work">
+              <img src="" alt="coming soon" style="background-color: gray" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--contact-->
+    <div id="contact">
+      <div class="container">
+        <div class="row">
+          <div class="contact-left">
+            <h1 class="sub-title">Contact for cleanup</h1>
+            <p>
+              <i class="fa-solid fa-envelope"></i>
+              xyz@gmail.com
+            </p>
+            <p><i class="fa-solid fa-phone"></i> 7568275554</p>
+
+            <div>
+              <input
+                type="file"
+                name="Image"
+                accept="image/*"
+                id="uploadPic"
+                class="btn"
+              />
+              <label for="uploadPic" class="btn">Upload Picture</label>
+            </div>
+          </div>
+          <div class="contact-right">
+            <form name="submit-to-google-sheet">
+              <input type="text" name="Name" placeholder="Your Name" required />
+              <input
+                type="email"
+                name="Email"
+                placeholder="Your Email"
+                required
+              />
+              <textarea
+                name="Message"
+                rows="6"
+                placeholder="Your Message And Location"
+              ></textarea>
+              <button type="submit" class="btn">Submit</button>
+            </form>
+            <span id="msg"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var tablinks = document.getElementsByClassName("tab-links");
+      var tabcontents = document.getElementsByClassName("tab-contents");
+
+      function opentab(tabname) {
+        for (tablink of tablinks) {
+          tablink.classList.remove("active-link");
+        }
+
+        for (tabcontent of tabcontents) {
+          tabcontent.classList.remove("active-tab");
+        }
+
+        event.target.classList.add("active-link");
+        document.getElementById(tabname).classList.add("active-tab");
+      }
+    </script>
+
+    <script>
+      var sideM = document.getElementById("sidemenu");
+      function openmenu() {
+        sideM.style.right = "0";
+      }
+      function closemenu() {
+        sideM.style.right = "-200px";
+      }
+    </script>
+
+    <script>
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbw25_DVAI-gZVcWD86sSLj0jKxb7yjXO18oFBcGyRNUcK--LG6AR9pVEw0yMLCe4EkZ/exec";
+      const form = document.forms["submit-to-google-sheet"];
+      const message = document.getElementById("msg");
+      const uploadPic = document.getElementById("uploadPic");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        formData.append("image", uploadPic.files[0]); // Append the uploaded image data
+
+        fetch(scriptURL, { method: "POST", body: formData })
+          .then((response) => {
+            if (response.ok) {
+              message.innerText = "Message sent successfully";
+              setTimeout(function () {
+                message.innerText = "";
+              }, 3000);
+              form.reset();
+            } else {
+              throw new Error("Network response was not ok.");
+            }
+          })
+          .catch((error) => console.error("Error!", error));
+      });
+    </script>
+  </body>
+</html>
