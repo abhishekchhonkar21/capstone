@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SmartBin Selection</title>
+  </head>
+  <body>
+    <h1>Select SmartBin</h1>
+    <p>Total weight of all accounts: <span id="totalWeight">0</span> Kg</p>
+    <button onclick="openSmartBin('D1')">D1</button>
+    <button onclick="openSmartBin('D2')">D2</button>
+    <button onclick="openSmartBin('D3')">D3</button>
+    <button onclick="openSmartBin('D4')">D4</button>
+
+    <script>
+      // Function to calculate the total weight of all accounts
+      function calculateTotalWeight() {
+        const accounts = ["D1", "D2", "D3", "D4"];
+        let totalWeight = 0;
+        accounts.forEach((accountId) => {
+          const accountData = localStorage.getItem(accountId);
+          if (accountData) {
+            const account = JSON.parse(accountData);
+            totalWeight += account.movements.reduce(
+              (sum, movement) => sum + movement.weight,
+              0
+            );
+          }
+        });
+        return totalWeight;
+      }
+
+      // Update total weight in the HTML
+      const totalWeightElement = document.getElementById("totalWeight");
+      totalWeightElement.textContent = calculateTotalWeight();
+
+      // Function to open SmartBin page
+      function openSmartBin(accountId) {
+        window.location.href = `management.html?account=${accountId}`;
+      }
+    </script>
+  </body>
+</html>
