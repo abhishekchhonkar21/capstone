@@ -1,0 +1,63 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  color: black;
+}
+
+.navbar {
+  background-color: red; /* Dark red */
+  padding: 1rem;
+  text-align: center;
+}
+
+.navbar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.navbar li {
+  display: inline;
+  margin-right: 1rem;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  margin-top: 0;
+  color: red; /* Dark red */
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+.selection-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.selection-box {
+  width: calc(25% - 1rem);
+  margin: 0.5rem;
+  padding: 1rem;
+  border: 1px solid black; /* Dark red */
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  background-color: white; /* Black */
+}
+
+.selection-box:hover {
+  background-color: red; /* Dark red */
+}
