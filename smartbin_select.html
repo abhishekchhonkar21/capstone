@@ -16,7 +16,8 @@
         width: 100%;
         border-collapse: collapse;
       }
-      th, td {
+      th,
+      td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
@@ -33,14 +34,13 @@
         position: absolute;
         background-color: #f9f9f9;
         min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         padding: 12px;
         z-index: 1;
       }
       .hoverable:hover .hover-content {
         display: block;
       }
-
       .modal {
         display: none;
         position: fixed;
@@ -50,7 +50,7 @@
         width: 100%;
         height: 100%;
         overflow: auto;
-        background-color: rgba(0,0,0,0.4);
+        background-color: rgba(0, 0, 0, 0.4);
       }
       .modal-content {
         background-color: #fefefe;
@@ -79,7 +79,12 @@
       <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#">About</a></li>
-        <li><a href="https://docs.google.com/spreadsheets/d/192QlauwUyoRXXyeJBZ5-Ft0nsQyAdfSNmXzGMBBxRgw/edit?resourcekey#gid=1622371888">Complaints</a></li>
+        <li>
+          <a
+            href="https://docs.google.com/spreadsheets/d/192QlauwUyoRXXyeJBZ5-Ft0nsQyAdfSNmXzGMBBxRgw/edit?resourcekey#gid=1622371888"
+            >Complaints</a
+          >
+        </li>
       </ul>
     </div>
 
@@ -151,7 +156,48 @@
       </div>
     </section>
 
-    <script src="smartbin_esp32.js"></script>
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBYV5EoGfd9_EB_0nyvjdnVI6MIU5unqK8",
+        authDomain: "smartbin-dcbe5.firebaseapp.com",
+        databaseURL:
+          "https://smartbin-dcbe5-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smartbin-dcbe5",
+        storageBucket: "smartbin-dcbe5.appspot.com",
+        messagingSenderId: "990234762100",
+        appId: "1:990234762100:web:4512d6d7ee59122772aa21",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Get a reference to the Firebase Realtime Database
+      const database = firebase.database();
+
+      // Reference to the ultrasonic sensor data path in the database
+      const sensorRef = database.ref("Sensor/Distance");
+
+      // Listen for data changes and update the D1 div's background color based on the height
+      sensorRef.on("value", (snapshot) => {
+        const distance = snapshot.val();
+        const d1Div = document.getElementById("D1");
+
+        // Update the background color of the D1 div
+        if (distance > 25) {
+          d1Div.style.backgroundColor = "green";
+        } else if (distance < 5) {
+          d1Div.style.backgroundColor = "red";
+        } else if (distance < 15) {
+          d1Div.style.backgroundColor = "yellow";
+        }
+      });
+    </script>
+
     <script>
       // Existing functions for weight and fill levels
       function calculateTotalWeight() {
@@ -187,85 +233,112 @@
             const account = JSON.parse(accountData);
             const fillPercentage = account.fillLevel;
             const binElement = document.getElementById(accountId);
-            binElement.style.backgroundColor = fillPercentage >= 90 ? 'red' :
-                                               fillPercentage >= 50 ? 'yellow' :
-                                               'green';
+            binElement.style.backgroundColor =
+              fillPercentage >= 90
+                ? "red"
+                : fillPercentage >= 50
+                ? "yellow"
+                : "green";
           }
         });
       }
 
       // New functions for complaint and worker management
       function addComplaint(details, type, status) {
-        const table = document.getElementById('complaintTable').getElementsByTagName('tbody')[0];
+        const table = document
+          .getElementById("complaintTable")
+          .getElementsByTagName("tbody")[0];
         const row = table.insertRow();
         const cellDetails = row.insertCell(0);
         const cellType = row.insertCell(1);
         const cellStatus = row.insertCell(2);
 
-        cellDetails.innerHTML = `<button onclick='showComplaintDetails(${JSON.stringify(details)}, "${type}", "${status}")'>View Details</button>`;
+        cellDetails.innerHTML = `<button onclick='showComplaintDetails(${JSON.stringify(
+          details
+        )}, "${type}", "${status}")'>View Details</button>`;
         cellType.textContent = type;
         cellStatus.textContent = status;
       }
 
       function showComplaintDetails(details, type, status) {
-        const modal = document.getElementById('complaintModal');
-        const detailsContainer = document.getElementById('complaintDetails');
-        const workerSelect = document.getElementById('workerSelect');
+        const modal = document.getElementById("complaintModal");
+        const detailsContainer = document.getElementById("complaintDetails");
+        const workerSelect = document.getElementById("workerSelect");
 
         detailsContainer.innerHTML = `
-          <p><strong>Name:</strong> ${details.name}</p>
-          <p><strong>Email:</strong> ${details.email}</p>
-          <p><strong>Location:</strong> ${details.gps}</p>
-          <p><strong>Problem Type:</strong> ${type}</p>
-          <p><strong>Status:</strong> ${status}</p>
-          <img src="${details.photo}" alt="Complaint photo" style="max-width: 200px;">
-        `;
+        <p><strong>Name:</strong> ${details.name}</p>
+        <p><strong>Email:</strong> ${details.email}</p>
+        <p><strong>Location:</strong> ${details.gps}</p>
+        <p><strong>Problem Type:</strong> ${type}</p>
+        <p><strong>Status:</strong> ${status}</p>
+        <img src="${details.photo}" alt="Complaint photo" style="max-width: 200px;">
+      `;
 
         workerSelect.innerHTML = '<option value="">Select a worker</option>';
         const workers = getAvailableWorkers();
-        workers.forEach(worker => {
-          const option = document.createElement('option');
+        workers.forEach((worker) => {
+          const option = document.createElement("option");
           option.value = worker.id;
           option.textContent = `${worker.id} - ${worker.name}`;
           workerSelect.appendChild(option);
         });
 
-        modal.style.display = 'block';
+        modal.style.display = "block";
       }
 
       function getAvailableWorkers() {
         return [
-          { id: 'W001', name: 'John Doe' },
-          { id: 'W003', name: 'Jane Smith' }
+          { id: "W001", name: "John Doe" },
+          { id: "W003", name: "Jane Smith" },
         ];
       }
 
       function assignWorker() {
-        const workerSelect = document.getElementById('workerSelect');
+        const workerSelect = document.getElementById("workerSelect");
         const selectedWorkerId = workerSelect.value;
         if (selectedWorkerId) {
-          alert(`Worker ${selectedWorkerId} has been assigned to this complaint.`);
-          document.getElementById('complaintModal').style.display = 'none';
+          alert(
+            `Worker ${selectedWorkerId} has been assigned to this complaint.`
+          );
+          document.getElementById("complaintModal").style.display = "none";
         } else {
-          alert('Please select a worker to assign.');
+          alert("Please select a worker to assign.");
         }
       }
 
-      document.getElementsByClassName('close')[0].onclick = function() {
-        document.getElementById('complaintModal').style.display = 'none';
+      document.getElementsByClassName("close")[0].onclick = function () {
+        document.getElementById("complaintModal").style.display = "none";
       };
 
-      window.onclick = function(event) {
-        const modal = document.getElementById('complaintModal');
+      window.onclick = function (event) {
+        const modal = document.getElementById("complaintModal");
         if (event.target === modal) {
-          modal.style.display = 'none';
+          modal.style.display = "none";
         }
       };
 
       // Populate tables dynamically
-      addComplaint({ name: 'User1', email: 'user1@example.com', gps: '123.45, 67.89', photo: 'photo1.jpg' }, 'Overflow', 'Pending');
-      addComplaint({ name: 'User2', email: 'user2@example.com', gps: '234.56, 78.90', photo: 'photo2.jpg' }, 'Damage', 'In Progress');
-      
+      addComplaint(
+        {
+          name: "User1",
+          email: "user1@example.com",
+          gps: "123.45, 67.89",
+          photo: "photo1.jpg",
+        },
+        "Overflow",
+        "Pending"
+      );
+      addComplaint(
+        {
+          name: "User2",
+          email: "user2@example.com",
+          gps: "234.56, 78.90",
+          photo: "photo2.jpg",
+        },
+        "Damage",
+        "In Progress"
+      );
+
       // Call the weight calculation and update functions on page load
       updateTotalWeight();
       updateFillLevels();
