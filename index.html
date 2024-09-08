@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ultrasonic Sensor Distance</title>
+    <!-- Load Firebase SDK from CDN -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  </head>
+  <body>
+    <h1>Ultrasonic Sensor Distance</h1>
+    <p id="distance">Fetching data...</p>
+
+    <script>
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBYV5EoGfd9_EB_0nyvjdnVI6MIU5unqK8",
+        authDomain: "smartbin-dcbe5.firebaseapp.com",
+        databaseURL:
+          "https://smartbin-dcbe5-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smartbin-dcbe5",
+        storageBucket: "smartbin-dcbe5.appspot.com",
+        messagingSenderId: "990234762100",
+        appId: "1:990234762100:web:4512d6d7ee59122772aa21",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Get a reference to the Firebase Realtime Database
+      const database = firebase.database();
+
+      // Reference to the ultrasonic sensor data path in the database
+      const sensorRef = database.ref("Sensor/Distance");
+
+      // Listen for data changes and update the HTML with the latest distance
+      sensorRef.on("value", (snapshot) => {
+        const distance = snapshot.val();
+        document.getElementById(
+          "distance"
+        ).innerText = `Distance: ${distance} cm`;
+      });
+    </script>
+  </body>
+</html>
