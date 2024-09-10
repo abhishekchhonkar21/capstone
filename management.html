@@ -16,12 +16,10 @@
     <!-- TOP NAVIGATION -->
     <nav class="smartbin-nav">
       <p class="welcome">Smart<span class="bin">Bin</span> Management System</p>
-      <!-- <img src="logo.png" alt="Logo" class="logo" /> -->
     </nav>
     <h1 class="account-info"></h1>
     <main class="app">
       <!-- BALANCE -->
-
       <div class="balance">
         <div>
           <p class="balance__label">Total weight collected</p>
@@ -33,142 +31,143 @@
       </div>
 
       <!-- MOVEMENTS -->
-      <div class="movements">
-        <!-- Movements rows will be dynamically added here -->
-      </div>
+      <div class="movements"></div>
 
-      <!-- OPERATION: TRANSFERS -->
+      <!-- OPERATION: ADD WEIGHT -->
       <div class="operation operation--transfer">
         <h2>Add weight</h2>
         <form class="form form--transfer">
           <input type="number" class="form__input form__input--amount" />
-          <button class="form__btn form__btn--transfer">&rarr;</button>
+          <button type="submit" class="form__btn form__btn--transfer">
+            &rarr;
+          </button>
           <label class="form__label">Weight</label>
         </form>
       </div>
-
-      <!-- LOGOUT TIMER -->
-      <!-- <p class="logout-timer">
-        You will be logged out in <span class="timer">05:00</span>
-      </p> -->
     </main>
 
-    <script>
-      // Data
-      const accounts = {
-        D1: {
-          owner: "D1",
-          movements: [], // Empty array to store weight objects
-          pin: 5207,
-          movementsDates: [], // Empty array to store dates
-        },
-        D2: {
-          owner: "D2",
-          movements: [],
-          pin: 2222,
-          movementsDates: [],
-        },
-        D3: {
-          owner: "D3",
-          movements: [],
-          pin: 3333,
-          movementsDates: [],
-        },
-        D4: {
-          owner: "D4",
-          movements: [],
-          pin: 4444,
-          movementsDates: [],
-        },
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        get,
+      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCcKhbawYau955opz4dUAon6uDOeE0YEZA",
+        authDomain: "smartbin-management.firebaseapp.com",
+        databaseURL:
+          "https://smartbin-management-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "smartbin-management",
+        storageBucket: "smartbin-management.appspot.com",
+        messagingSenderId: "874652323117",
+        appId: "1:874652323117:web:c95b0ef8abf098e85cd7a4",
       };
 
-      // Elements
-      const labelWeight = document.querySelector(".balance__value");
-      const containerMovements = document.querySelector(".movements");
-      const accountInfo = document.querySelector(".account-info");
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
 
-      // Function to input weight
-      function inputWeight(account, weight) {
-        const currentDate = new Date();
-        const formattedDate = `${currentDate.getDate()}/${
-          currentDate.getMonth() + 1
-        }/${currentDate.getFullYear()}`;
-
-        // Create object with weight and date
-        const newMovement = {
+      // Function to add weight to Firebase
+      function inputWeight(accountId, weight) {
+        const date = new Date().toLocaleDateString(); // Get current date
+        const weightData = {
           weight: weight,
-          date: formattedDate,
+          date: date,
         };
 
-        // Add newMovement to movements and movementsDates arrays
-        account.movements.push(newMovement);
-        account.movementsDates.push(formattedDate);
+        console.log(
+          `Storing weight: ${weight}kg with date: ${date} for account: ${accountId}`
+        ); // Debugging
 
-        // Store updated account data in local storage
-        localStorage.setItem(account.owner, JSON.stringify(account));
-
-        // Display movements and update balance
-        displayMovements(account);
-        updateTotalWeight(); // Call updateTotalWeight after adding weight
+        // Save weight as an object
+        const accountRef = ref(
+          db,
+          `accounts/${accountId}/movements/${Date.now()}`
+        );
+        set(accountRef, weightData)
+          .then(() => {
+            console.log("Weight added successfully");
+            displayMovements(accountId); // Refresh the movements on UI
+          })
+          .catch((error) => console.error("Error adding weight:", error));
       }
 
-      // Function to display movements
-      function displayMovements(account) {
-        containerMovements.innerHTML = "";
-        account.movements.forEach((movement, index) => {
-          const movementType = "Collected";
-          const date = movement.date;
-          const displayDate = `${date}`; // You can format the date here
-          const html = `
-                <div class="movements__row">
-                    <div class="movements__type movements__type--${movementType}">${
-            index + 1
-          } ${movementType}</div>
-                    <div class="movements__date">${displayDate}</div>
-                    <div class="movements__value">${movement.weight}Kg</div>
-                </div>
-                `;
-          containerMovements.insertAdjacentHTML("beforeend", html);
-        });
-      }
+      // Function to display movements from Firebase
+      function displayMovements(accountId) {
+        const movementsRef = ref(db, `accounts/${accountId}/movements`);
+        get(movementsRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const movements = snapshot.val();
+              console.log("Movements retrieved:", movements); // Debugging
 
-      // Function to update total weight
-      function updateTotalWeight() {
-        const account = getCurrentAccount();
-        const totalWeight = account.movements.reduce((sum, movement) => {
-          return sum + movement.weight;
-        }, 0);
-        labelWeight.textContent = `${totalWeight}Kg`;
-      }
+              const containerMovements = document.querySelector(".movements");
+              containerMovements.innerHTML = ""; // Clear previous entries
 
-      // Function to get the currently selected account
-      function getCurrentAccount() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const accountId = urlParams.get("account");
-        const accountData = localStorage.getItem(accountId);
-        return JSON.parse(accountData) || accounts[accountId];
+              // Loop through all movements and display them
+              Object.keys(movements).forEach((key) => {
+                const movement = movements[key]; // Get the movement object
+                const { weight, date } = movement; // Destructure the object to get weight and date
+
+                if (weight && date) {
+                  console.log(
+                    `Displaying movement: Weight = ${weight}, Date = ${date}`
+                  ); // Debugging
+
+                  const html = `
+                    <div class="movements__row">
+                      <div class="movements__type movements__type--Collected">${weight}kg</div>
+                      <div class="movements__date">${date}</div>
+                    </div>
+                  `;
+                  containerMovements.insertAdjacentHTML("beforeend", html);
+                } else {
+                  console.error("Invalid movement format:", movement); // Debugging in case of invalid format
+                }
+              });
+            } else {
+              console.log("No movements found");
+            }
+          })
+          .catch((error) =>
+            console.error("Error retrieving movements:", error)
+          );
       }
 
       // Event listener for Add Weight button
-      const btnAddWeight = document.querySelector(".form__btn--transfer");
+      document
+        .querySelector(".form__btn--transfer")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          const amount = parseFloat(
+            document.querySelector(".form__input--amount").value
+          );
+          const accountId = new URLSearchParams(window.location.search).get(
+            "account"
+          );
 
-      btnAddWeight.addEventListener("click", function (event) {
-        event.preventDefault();
-        const amount = parseFloat(
-          document.querySelector(".form__input--amount").value
-        );
-        const currentAccount = getCurrentAccount();
-        inputWeight(currentAccount, amount);
-      });
+          if (accountId && !isNaN(amount)) {
+            console.log(`Adding weight: ${amount} to account: ${accountId}`); // Debugging
+            inputWeight(accountId, amount); // Add the weight to Firebase
+          } else {
+            console.error("Invalid account ID or amount");
+          }
+        });
 
-      // Retrieve and display the selected account data
-      const selectedAccount = getCurrentAccount();
-      if (selectedAccount) {
-        displayMovements(selectedAccount);
-        updateTotalWeight();
-        accountInfo.textContent = `SmartBin ID - ${selectedAccount.owner}`; // Display account info in navbar
+      // Retrieve and display the selected account data on page load
+      const accountId = new URLSearchParams(window.location.search).get(
+        "account"
+      );
+      if (accountId) {
+        console.log(`Loading movements for account: ${accountId}`); // Debugging
+        displayMovements(accountId); // Fetch movements on page load
       } else {
-        console.log("No account selected.");
+        console.error("No account ID provided");
       }
     </script>
   </body>
