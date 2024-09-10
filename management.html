@@ -27,7 +27,7 @@
             As of <span class="date">05/03/2037</span>
           </p>
         </div>
-        <p class="balance__value">0000</p>
+        <p class="balance__value">0kg</p>
       </div>
 
       <!-- MOVEMENTS -->
@@ -72,6 +72,9 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
 
+      // Variable to keep track of total weight
+      let totalWeight = 0;
+
       // Function to add weight to Firebase
       function inputWeight(accountId, weight) {
         const date = new Date().toLocaleDateString(); // Get current date
@@ -92,9 +95,24 @@
         set(accountRef, weightData)
           .then(() => {
             console.log("Weight added successfully");
+            totalWeight += weight; // Update total weight
+            updateTotalWeight(accountId); // Update total weight in Firebase
             displayMovements(accountId); // Refresh the movements on UI
+            updateUI(); // Update the total weight in UI
           })
           .catch((error) => console.error("Error adding weight:", error));
+      }
+
+      // Function to update total weight in Firebase
+      function updateTotalWeight(accountId) {
+        const totalWeightRef = ref(db, `accounts/${accountId}/totalWeight`);
+        set(totalWeightRef, totalWeight)
+          .then(() => {
+            console.log("Total weight updated successfully");
+          })
+          .catch((error) =>
+            console.error("Error updating total weight:", error)
+          );
       }
 
       // Function to display movements from Firebase
@@ -120,11 +138,11 @@
                   ); // Debugging
 
                   const html = `
-                    <div class="movements__row">
-                      <div class="movements__type movements__type--Collected">${weight}kg</div>
-                      <div class="movements__date">${date}</div>
-                    </div>
-                  `;
+                                    <div class="movements__row">
+                                        <div class="movements__type movements__type--Collected">${weight}kg</div>
+                                        <div class="movements__date">${date}</div>
+                                    </div>
+                                `;
                   containerMovements.insertAdjacentHTML("beforeend", html);
                 } else {
                   console.error("Invalid movement format:", movement); // Debugging in case of invalid format
@@ -137,6 +155,34 @@
           .catch((error) =>
             console.error("Error retrieving movements:", error)
           );
+      }
+
+      // Function to update the UI with the total weight
+      function updateUI() {
+        document.querySelector(
+          ".balance__value"
+        ).textContent = `${totalWeight}kg`;
+        console.log("UI updated with total weight:", totalWeight); // Debugging
+      }
+
+      // Retrieve total weight and movements on page load
+      function initializePage(accountId) {
+        const totalWeightRef = ref(db, `accounts/${accountId}/totalWeight`);
+        get(totalWeightRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              totalWeight = snapshot.val();
+              console.log(`Total weight retrieved: ${totalWeight}kg`); // Debugging
+              updateUI(); // Update UI with retrieved total weight
+            } else {
+              console.log("No total weight found, initializing to 0kg");
+            }
+          })
+          .catch((error) =>
+            console.error("Error retrieving total weight:", error)
+          );
+
+        displayMovements(accountId); // Fetch movements on page load
       }
 
       // Event listener for Add Weight button
@@ -164,8 +210,8 @@
         "account"
       );
       if (accountId) {
-        console.log(`Loading movements for account: ${accountId}`); // Debugging
-        displayMovements(accountId); // Fetch movements on page load
+        console.log(`Loading data for account: ${accountId}`); // Debugging
+        initializePage(accountId); // Initialize page with account data
       } else {
         console.error("No account ID provided");
       }
