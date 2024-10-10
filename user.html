@@ -21,10 +21,10 @@
           <ul id="sidemenu">
             <li><a href="#header">Home</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
+            <li><a href="about_form.html">Product & Services</a></li>
             <li><a href="#portfolio">Gallery</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="">Staff login</a></li>
+            <li><a href="">Staff Login</a></li>
             <i class="fa-solid fa-xmark" onclick="closemenu()"></i>
           </ul>
           <i class="fa-solid fa-ellipsis-vertical" onclick="openmenu()"></i>
@@ -187,24 +187,75 @@
             </div>
           </div>
           <div class="contact-right">
-            
-              <h3>Waste Report Form</h3>
-              <button
-
-                type="submit"
-                onclick="window.open('https://forms.gle/Mem9zxES2cCdjyHw7', '_blank')"
-                class="btn"
-              >
-                Submit
-              </button>
-            
+            <h2 style="text-align: center;">Waste Report Form</h2>
+            <form
+              name="submit-to-google-sheet"
+              enctype="multipart/form-data"
+            >
+              <label for="first-name">First Name:</label>
+              <input type="text" id="first-name" name="first-name" placeholder="First Name" required />
+          
+              <label for="last-name">Last Name:</label>
+              <input type="text" id="last-name" name="last-name" placeholder="Last Name" required />
+          
+              <label for="location">Location:</label>
+              <input type="text" id="location" name="location" placeholder="Location" required />
+          
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" placeholder="Email" required />
+          
+              <label for="contact-number">Contact Number:</label>
+              <input type="tel" id="contact-number" name="contact-number" placeholder="Phone Number" required />
+          
+              <label for="waste-type">Type of Waste Collected:</label>
+              <select id="waste-type" name="waste-type" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #090909; border-radius: 5px; font-size: 16px;">
+                <option value="" disabled selected>Select type of waste</option>
+                <option value="corpses-waste">Corpses Waste</option>
+                <option value="plant-waste">Plant Waste</option>
+                <option value="animal-waste">Animal Waste</option>
+                <option value="other">Other</option>
+              </select>
+          
+              <div style="display: flex; align-items: center;">
+                <label for="uploadPic" style="font-weight: bold; background-color: red; padding: 10px; border-radius: 5px; display: inline-block; cursor: pointer;">Upload Picture</label>
+                <input
+                  type="file"
+                  id="uploadPic"
+                  name="uploadPic"
+                  accept="image/jpeg, image/png"
+                  required
+                  style="display: none;" 
+                  onchange="showFileName()"
+                />
+                <p id="file-name" style="font-size: 14px; color: gray; margin-left: 10px;">No file selected</p> <!-- Display file name -->
+              </div>
+          
+              <button type="submit" class="btn" style="width: 100%; padding: 10px; background-color: red; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px;">Submit</button>
+            </form>
             <span id="msg"></span>
           </div>
+
         </div>
       </div>
     </div>
 
     <script>
+
+
+
+   // JavaScript to display the selected file name next to the upload button
+   function showFileName() {
+              const fileInput = document.getElementById('uploadPic');
+              const fileName = fileInput.files[0]?.name || "No file selected";
+              document.getElementById('file-name').innerText = fileName;
+            }
+          
+            // To handle file input label click
+            document.querySelector("label[for='uploadPic']").addEventListener('click', function() {
+              document.getElementById('uploadPic').click();
+            });
+
+
       var tablinks = document.getElementsByClassName("tab-links");
       var tabcontents = document.getElementsByClassName("tab-contents");
 

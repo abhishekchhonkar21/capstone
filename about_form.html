@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartBin - Request Form</title>
+    <link rel="stylesheet" href="about_form.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>Request Smart Bins & Pricing Catalog</h1>
+      <form action="#">
+        <!-- Organisation Name -->
+        <label for="orgName">Name of the Organisation</label>
+        <input
+          type="text"
+          id="orgName"
+          name="orgName"
+          placeholder="Enter organisation name"
+          required
+        />
+
+        <!-- Location -->
+        <label for="location">Location</label>
+        <input
+          type="text"
+          id="location"
+          name="location"
+          placeholder="Enter the location"
+          required
+        />
+
+        <!-- Number of Dustbins -->
+        <label for="binsRequired">No. of Dustbins Required</label>
+        <input
+          type="number"
+          id="binsRequired"
+          name="binsRequired"
+          placeholder="Enter number of dustbins"
+          required
+        />
+
+        <!-- Subscription Mode Selection -->
+        <label for="subscriptionType">Subscription Type</label>
+        <select id="subscriptionType" name="subscriptionType" required>
+          <option value="">Select Subscription Mode</option>
+          <option value="corporate">Corporate Use</option>
+          <option value="personal">Personal Use</option>
+        </select>
+
+        <!-- Pricing Information Section -->
+        <div id="pricingCatalog" class="pricing-info">
+          <h3>Pricing Catalog</h3>
+          <p>Select a subscription type to view the pricing details:</p>
+
+          <!-- Corporate Pricing -->
+          <div id="corporatePricing" class="pricing-details" style="display: none;">
+            <h4>Corporate Pricing:</h4>
+            <ul>
+              <li>Basic Package (up to 10 bins): 100rs/month</li>
+              <li>Standard Package (up to 50 bins): 400rs/month</li>
+              <li>Premium Package (unlimited bins): 900rs/month</li>
+            </ul>
+          </div>
+
+          <!-- Personal Pricing -->
+          <div id="personalPricing" class="pricing-details" style="display: none;">
+            <h4>Personal Pricing:</h4>
+            <ul>
+              <li>Basic Package (1 bin): 15rs/month</li>
+              <li>Standard Package (up to 5 bins): 50rs/month</li>
+              <li>Premium Package (up to 10 bins): 90rs/month</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Submit Request" />
+      </form>
+    </div>
+
+    <script>
+      // JavaScript to show pricing information based on subscription type
+      const subscriptionType = document.getElementById("subscriptionType");
+      const corporatePricing = document.getElementById("corporatePricing");
+      const personalPricing = document.getElementById("personalPricing");
+
+      subscriptionType.addEventListener("change", function () {
+        if (subscriptionType.value === "corporate") {
+          corporatePricing.style.display = "block";
+          personalPricing.style.display = "none";
+        } else if (subscriptionType.value === "personal") {
+          personalPricing.style.display = "block";
+          corporatePricing.style.display = "none";
+        } else {
+          corporatePricing.style.display = "none";
+          personalPricing.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
