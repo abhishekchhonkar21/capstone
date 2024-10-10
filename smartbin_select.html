@@ -106,56 +106,6 @@
       </div>
     </section>
 
-    <!-- Complaint Management Section -->
-    <section class="container">
-      <h2>Complaint Management</h2>
-      <div class="scrollable-table">
-        <table id="complaintTable">
-          <thead>
-            <tr>
-              <th>Details</th>
-              <th>Problem Type</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Complaint rows will be added here dynamically -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Modal for Complaint Details -->
-    <div id="complaintModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Complaint Details</h2>
-        <div id="complaintDetails"></div>
-        <select id="workerSelect">
-          <option value="">Select a worker</option>
-        </select>
-        <button onclick="assignWorker()">Assign Worker</button>
-      </div>
-    </div>
-
-    <!-- Worker Management Section -->
-    <section class="container">
-      <h2>Worker Management</h2>
-      <div class="scrollable-table">
-        <table id="workerTable">
-          <thead>
-            <tr>
-              <th>Worker ID</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Worker rows will be added here dynamically -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>

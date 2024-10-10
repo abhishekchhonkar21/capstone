@@ -188,25 +188,25 @@
           </div>
           <div class="contact-right">
             <h2 style="text-align: center;">Waste Report Form</h2>
-            <form
-              name="submit-to-google-sheet"
-              enctype="multipart/form-data"
-            >
+            <form name="submit-to-google-sheet" enctype="multipart/form-data" onsubmit="return validateForm()">
+  
+              <!-- Other form fields -->
+            
               <label for="first-name">First Name:</label>
               <input type="text" id="first-name" name="first-name" placeholder="First Name" required />
-          
+            
               <label for="last-name">Last Name:</label>
               <input type="text" id="last-name" name="last-name" placeholder="Last Name" required />
-          
+            
               <label for="location">Location:</label>
               <input type="text" id="location" name="location" placeholder="Location" required />
-          
+            
               <label for="email">Email:</label>
               <input type="email" id="email" name="email" placeholder="Email" required />
-          
+            
               <label for="contact-number">Contact Number:</label>
               <input type="tel" id="contact-number" name="contact-number" placeholder="Phone Number" required />
-          
+            
               <label for="waste-type">Type of Waste Collected:</label>
               <select id="waste-type" name="waste-type" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #090909; border-radius: 5px; font-size: 16px;">
                 <option value="" disabled selected>Select type of waste</option>
@@ -215,7 +215,8 @@
                 <option value="animal-waste">Animal Waste</option>
                 <option value="other">Other</option>
               </select>
-          
+            
+              <!-- File upload section -->
               <div style="display: flex; align-items: center;">
                 <label for="uploadPic" style="font-weight: bold; background-color: red; padding: 10px; border-radius: 5px; display: inline-block; cursor: pointer;">Upload Picture</label>
                 <input
@@ -229,16 +230,87 @@
                 />
                 <p id="file-name" style="font-size: 14px; color: gray; margin-left: 10px;">No file selected</p> <!-- Display file name -->
               </div>
-          
+            
+              <!-- Location sharing section -->
+              <div style="margin-top: 15px;">
+                <label for="share-location">Share Current Location:</label>
+                <button type="button" onclick="getLocation()" style="width: 100%; padding: 10px; background-color: red; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Share Location</button>
+              </div>
+            
+              <p id="location-status" style="font-size: 14px; color: gray; margin-top: 10px;">Location not shared</p> <!-- Location status -->
+              <input type="hidden" id="latitude" name="latitude" required />
+              <input type="hidden" id="longitude" name="longitude" required />
+            
+              <!-- Submit button -->
               <button type="submit" class="btn" style="width: 100%; padding: 10px; background-color: red; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px;">Submit</button>
             </form>
+            
             <span id="msg"></span>
           </div>
 
         </div>
       </div>
     </div>
-
+    <script>
+      // Get the current location of the user
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+          document.getElementById("location-status").innerText = "Geolocation is not supported by this browser.";
+        }
+      }
+    
+      // Show the retrieved location coordinates
+      function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+    
+        // Set the latitude and longitude values into hidden form fields
+        document.getElementById("latitude").value = latitude;
+        document.getElementById("longitude").value = longitude;
+        document.getElementById("location-status").innerText = `Location shared: (${latitude}, ${longitude})`;
+      }
+    
+      // Handle errors during geolocation retrieval
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            document.getElementById("location-status").innerText = "User denied the request for Geolocation.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            document.getElementById("location-status").innerText = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            document.getElementById("location-status").innerText = "The request to get user location timed out.";
+            break;
+          case error.UNKNOWN_ERROR:
+            document.getElementById("location-status").innerText = "An unknown error occurred.";
+            break;
+        }
+      }
+    
+      // Validate the form to ensure location sharing is complete
+      function validateForm() {
+        const latitude = document.getElementById("latitude").value;
+        const longitude = document.getElementById("longitude").value;
+    
+        if (!latitude || !longitude) {
+          alert("Please share your location before submitting the form.");
+          return false;
+        }
+    
+        return true; // Allow form submission
+      }
+    
+      // Show the file name when an image is selected
+      function showFileName() {
+        const fileInput = document.getElementById("uploadPic");
+        const fileName = fileInput.files[0].name;
+        document.getElementById("file-name").innerText = fileName;
+      }
+    </script>
+    
     <script>
 
 
