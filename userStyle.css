@@ -417,3 +417,11 @@ nav .fa-solid {
 input[type="file"] {
   display: none;
 }
+.btn {
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
