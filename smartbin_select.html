@@ -1,297 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="smartbin_select_style.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartBin Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="smartbinrednobg.png" type="image/x-icon" />
     <style>
-      .scrollable-table {
-        max-height: 300px;
-        overflow-y: auto;
-        margin-bottom: 20px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-      .hoverable {
-        position: relative;
-        cursor: pointer;
-      }
-      .hover-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        padding: 12px;
-        z-index: 1;
-      }
-      .hoverable:hover .hover-content {
-        display: block;
-      }
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-      .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-      }
-      .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-      }
-      .close:hover,
-      .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: rgb(0, 0, 0);
+            color: white;
+        }
+        .container {
+            padding: 10px 10%;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .logo {
+            width: 100px;
+            border-radius: 100%;
+        }
+        nav ul li {
+            display: inline-block;
+            list-style: none;
+            margin: 10px 20px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 23px;
+            position: relative;
+        }
+        nav ul li a::after {
+            content: "";
+            width: 0;
+            height: 3px;
+            background: #ff0000;
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            transition: 0.2s;
+        }
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        .header-text {
+            margin-top: 20%;
+            font-size: 30px;
+        }
+        .header-text h1 {
+            font-size: 60px;
+            margin-top: 20px;
+        }
+        .header-text h1 span {
+            color: #ff0000;
+        }
+        .selection-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 40px;
+            margin-top: 50px;
+        }
+        .selection-box {
+            background: #262626;
+            padding: 40px;
+            font-size: 30px;
+            font-weight: 300;
+            border-radius: 10px;
+            transition: background 0.5s, transform 0.5s;
+            cursor: pointer;
+            text-align: center;
+        }
+        .selection-box:hover {
+            background: #ff0000;
+            transform: translateY(-10px);
+        }
+        #totalWeight {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff0000;
+        }
     </style>
-  </head>
-  <body>
-    <!-- Navbar -->
-    <div class="navbar">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li>
-          <a
-            href="https://docs.google.com/spreadsheets/d/192QlauwUyoRXXyeJBZ5-Ft0nsQyAdfSNmXzGMBBxRgw/edit?resourcekey#gid=1622371888"
-            >Complaints</a
-          >
-        </li>
-      </ul>
+</head>
+<body>
+    <div id="header">
+        <div class="container">
+            <nav>
+                <img src="smartbinrednobg.png" class="logo" alt="Logo">
+                <ul>
+                    <li><a href="smartbin_select.html">Home</a></li>
+                    <li><a href="complaint.html">Complaints</a></li>
+                    <li><a href="workeraccountpage.html">Worker's Accounts</a></li>
+                </ul>
+            </nav>
+            <div class="header-text">
+                <h1>Welcome to <span>SmartBin</span> Portal</h1>
+                <p>Select a SmartBin to manage</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Introduction Section -->
-    <section class="container">
-      <h1>Welcome to SmartBin Portal</h1>
-      <p>Available SmartBins</p>
-    </section>
-
-    <!-- SmartBin Selection Section -->
-    <section class="container">
-      <h2>Select SmartBin</h2>
-      <p>Total weight of all accounts: <span id="totalWeight">0</span> Kg</p>
-      <div class="selection-container">
-        <div class="selection-box" id="D1" onclick="openSmartBin('D1')">D1</div>
-        <div class="selection-box" id="D2" onclick="openSmartBin('D2')">D2</div>
-        <div class="selection-box" id="D3" onclick="openSmartBin('D3')">D3</div>
-        <div class="selection-box" id="D4" onclick="openSmartBin('D4')">D4</div>
-      </div>
-    </section>
-
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <div id="smartbin-selection" class="container">
+        <h2>Available SmartBins</h2>
+        <div class="selection-container">
+            <div id="D1" class="selection-box" onclick="openSmartBin('D1')">D1</div>
+            <div id="D2" class="selection-box" onclick="openSmartBin('D2')">D2</div>
+            <div id="D3" class="selection-box" onclick="openSmartBin('D3')">D3</div>
+            <div id="D4" class="selection-box" onclick="openSmartBin('D4')">D4</div>
+        </div>
+    </div>
 
     <script>
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyBYV5EoGfd9_EB_0nyvjdnVI6MIU5unqK8",
-        authDomain: "smartbin-dcbe5.firebaseapp.com",
-        databaseURL:
-          "https://smartbin-dcbe5-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "smartbin-dcbe5",
-        storageBucket: "smartbin-dcbe5.appspot.com",
-        messagingSenderId: "990234762100",
-        appId: "1:990234762100:web:4512d6d7ee59122772aa21",
-      };
-
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-
-      // Get a reference to the Firebase Realtime Database
-      const database = firebase.database();
-
-      // Reference to the ultrasonic sensor data path in the database
-      const sensorRef = database.ref("Sensor/Distance");
-
-      // Listen for data changes and update the D1 div's background color based on the height
-      sensorRef.on("value", (snapshot) => {
-        const distance = snapshot.val();
-        const d1Div = document.getElementById("D1");
-
-        // Update the background color of the D1 div
-        if (distance > 25) {
-          d1Div.style.backgroundColor = "green";
-        } else if (distance < 5) {
-          d1Div.style.backgroundColor = "red";
-        } else if (distance < 15) {
-          d1Div.style.backgroundColor = "yellow";
+        function openSmartBin(binId) {
+            // Add your logic here to open the selected SmartBin
+            console.log("Opening SmartBin: " + binId);
         }
-      });
+
+        // You can add more JavaScript here for additional functionality
+        // For example, to update the total weight dynamically
     </script>
-
-    <script>
-      // Existing functions for weight and fill levels
-      function calculateTotalWeight() {
-        const accounts = ["D1", "D2", "D3", "D4"];
-        let totalWeight = 0;
-        accounts.forEach((accountId) => {
-          const accountData = localStorage.getItem(accountId);
-          if (accountData) {
-            const account = JSON.parse(accountData);
-            totalWeight += account.movements.reduce(
-              (sum, movement) => sum + movement.weight,
-              0
-            );
-          }
-        });
-        return totalWeight;
-      }
-
-      function updateTotalWeight() {
-        const totalWeightElement = document.getElementById("totalWeight");
-        totalWeightElement.textContent = calculateTotalWeight();
-      }
-
-      function openSmartBin(accountId) {
-        window.location.href = `management.html?account=${accountId}`;
-      }
-
-      function updateFillLevels() {
-        const accounts = ["D1", "D2", "D3", "D4"];
-        accounts.forEach((accountId) => {
-          const accountData = localStorage.getItem(accountId);
-          if (accountData) {
-            const account = JSON.parse(accountData);
-            const fillPercentage = account.fillLevel;
-            const binElement = document.getElementById(accountId);
-            binElement.style.backgroundColor =
-              fillPercentage >= 90
-                ? "red"
-                : fillPercentage >= 50
-                ? "yellow"
-                : "green";
-          }
-        });
-      }
-
-      // New functions for complaint and worker management
-      function addComplaint(details, type, status) {
-        const table = document
-          .getElementById("complaintTable")
-          .getElementsByTagName("tbody")[0];
-        const row = table.insertRow();
-        const cellDetails = row.insertCell(0);
-        const cellType = row.insertCell(1);
-        const cellStatus = row.insertCell(2);
-
-        cellDetails.innerHTML = `<button onclick='showComplaintDetails(${JSON.stringify(
-          details
-        )}, "${type}", "${status}")'>View Details</button>`;
-        cellType.textContent = type;
-        cellStatus.textContent = status;
-      }
-
-      function showComplaintDetails(details, type, status) {
-        const modal = document.getElementById("complaintModal");
-        const detailsContainer = document.getElementById("complaintDetails");
-        const workerSelect = document.getElementById("workerSelect");
-
-        detailsContainer.innerHTML = `
-        <p><strong>Name:</strong> ${details.name}</p>
-        <p><strong>Email:</strong> ${details.email}</p>
-        <p><strong>Location:</strong> ${details.gps}</p>
-        <p><strong>Problem Type:</strong> ${type}</p>
-        <p><strong>Status:</strong> ${status}</p>
-        <img src="${details.photo}" alt="Complaint photo" style="max-width: 200px;">
-      `;
-
-        workerSelect.innerHTML = '<option value="">Select a worker</option>';
-        const workers = getAvailableWorkers();
-        workers.forEach((worker) => {
-          const option = document.createElement("option");
-          option.value = worker.id;
-          option.textContent = `${worker.id} - ${worker.name}`;
-          workerSelect.appendChild(option);
-        });
-
-        modal.style.display = "block";
-      }
-
-      function getAvailableWorkers() {
-        return [
-          { id: "W001", name: "John Doe" },
-          { id: "W003", name: "Jane Smith" },
-        ];
-      }
-
-      function assignWorker() {
-        const workerSelect = document.getElementById("workerSelect");
-        const selectedWorkerId = workerSelect.value;
-        if (selectedWorkerId) {
-          alert(
-            `Worker ${selectedWorkerId} has been assigned to this complaint.`
-          );
-          document.getElementById("complaintModal").style.display = "none";
-        } else {
-          alert("Please select a worker to assign.");
-        }
-      }
-
-      document.getElementsByClassName("close")[0].onclick = function () {
-        document.getElementById("complaintModal").style.display = "none";
-      };
-
-      window.onclick = function (event) {
-        const modal = document.getElementById("complaintModal");
-        if (event.target === modal) {
-          modal.style.display = "none";
-        }
-      };
-
-      // Populate tables dynamically
-      addComplaint(
-        {
-          name: "User1",
-          email: "user1@example.com",
-          gps: "123.45, 67.89",
-          photo: "photo1.jpg",
-        },
-        "Overflow",
-        "Pending"
-      );
-      addComplaint(
-        {
-          name: "User2",
-          email: "user2@example.com",
-          gps: "234.56, 78.90",
-          photo: "photo2.jpg",
-        },
-        "Damage",
-        "In Progress"
-      );
-
-      // Call the weight calculation and update functions on page load
-      updateTotalWeight();
-      updateFillLevels();
-    </script>
-  </body>
+</body>
 </html>

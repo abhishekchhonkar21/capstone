@@ -1,62 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="loginStyle.css" />
-    <title>Login page</title>
-  </head>
-  <body>
-    <div class="container">
-      <div class="screen">
-        <div class="screen__content">
-          <form class="login">
-            <h2>SmartBin</h2>
-            <div class="login__field">
-              <i class="login__icon fas fa-user"></i>
-              <input
-                type="text"
-                class="login__input"
-                placeholder="User name / Email"
-              />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBin - Worker Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="smartbinrednobg.png" type="image/x-icon" />
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h2 class="text-2xl font-bold mb-6 text-center">SmartBin Worker Login</h2>
+        <form id="loginForm">
+            <div class="mb-4">
+                <label for="email" class="block mb-2 text-sm font-medium text-gray-600">Email</label>
+                <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg" required>
             </div>
-            <div class="login__field">
-              <i class="login__icon fas fa-lock"></i>
-              <input
-                type="password"
-                class="login__input"
-                placeholder="Password"
-              />
+            <div class="mb-6">
+                <label for="password" class="block mb-2 text-sm font-medium text-gray-600">Password</label>
+                <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg" required>
             </div>
-            <button class="button login__submit">
-              <span class="button__text">Log In Now</span>
-              <i class="button__icon fas fa-chevron-right"></i>
-            </button>
-          </form>
-          <div class="social-login">
-            <div class="social-icons">
-              <a href="#" class="social-login__icon fab fa-instagram"></a>
-              <a href="#" class="social-login__icon fab fa-facebook"></a>
-              <a href="#" class="social-login__icon fab fa-twitter"></a>
-            </div>
-          </div>
-        </div>
-        <div class="screen__background">
-          <span
-            class="screen__background__shape screen__background__shape4"
-          ></span>
-          <span
-            class="screen__background__shape screen__background__shape3"
-          ></span>
-          <span
-            class="screen__background__shape screen__background__shape2"
-          ></span>
-          <span
-            class="screen__background__shape screen__background__shape1"
-          ></span>
-        </div>
-      </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Log In</button>
+        </form>
+        <p id="errorMessage" class="mt-4 text-red-500 text-center"></p>
     </div>
-  </body>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRWGFko1aH0feegmASU7YeLo0OGxlpLWg",
+            authDomain: "smartbinworker.firebaseapp.com",
+            projectId: "smartbinworker",
+            appId: "1:108771879383:web:4d032725ae37f21b8c0392"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If user is already logged in, redirect to tasks page
+                window.location.href = 'worker-tasks.html';
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('User signed in:', user);
+                    window.location.href = 'worker-tasks.html'; // Redirect to worker tasks page
+                })
+                .catch((error) => {
+                    console.error('Login error:', error.code, error.message);
+                    document.getElementById('errorMessage').textContent = 'Invalid email or password. Please try again.';
+                });
+        });
+    </script>
+</body>
 </html>

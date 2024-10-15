@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBin Worker Tasks</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="smartbinrednobg.png" type="image/x-icon" />
+</head>
+<body class="bg-black min-h-screen">
+    <div id="loginContainer" class="container mx-auto mt-20">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96 mx-auto transform transition-all hover:scale-105">
+            <h2 class="text-3xl font-bold mb-6 text-center text-blue-600">SmartBin Worker Login</h2>
+            <div class="mb-4">
+                <label for="email" class="block mb-2 text-gray-700">Email</label>
+                <input type="email" id="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block mb-2 text-gray-700">Password</label>
+                <input type="password" id="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+            </div>
+            <button id="loginBtn" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">Log In</button>
+        </div>
+    </div>
+
+    <div id="tasksContainer" class="container mx-auto mt-10 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-blue-600">Assigned Tasks</h1>
+                <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-300">Logout</button>
+            </div>
+            <div id="taskList" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase for worker authentication
+        const workerFirebaseConfig = {
+            apiKey: "AIzaSyCRWGFko1aH0feegmASU7YeLo0OGxlpLWg",
+            authDomain: "smartbinworker.firebaseapp.com",
+            databaseURL: "https://smartbinworker-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smartbinworker",
+            storageBucket: "smartbinworker.appspot.com",
+            messagingSenderId: "108771879383",
+            appId: "1:108771879383:web:4d032725ae37f21b8c0392"
+        };
+        const workerApp = firebase.initializeApp(workerFirebaseConfig, 'worker');
+        const workerAuth = workerApp.auth();
+        const workerDb = workerApp.database();
+
+        // Initialize Firebase for complaints
+        const complaintsFirebaseConfig = {
+            apiKey: "AIzaSyCIJRfgkC0lbIpcaFFahZWNK4Bc7jM_d6s",
+            authDomain: "smartbinform.firebaseapp.com",
+            databaseURL: "https://smartbinform-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smartbinform",
+            storageBucket: "smartbinform.appspot.com",
+            messagingSenderId: "345224231908",
+            appId: "1:345224231908:web:45ef4c9fefd13d53c5e5f1"
+        };
+        const complaintsApp = firebase.initializeApp(complaintsFirebaseConfig, 'complaints');
+        const complaintsDb = complaintsApp.database();
+
+        const loginContainer = document.getElementById('loginContainer');
+        const tasksContainer = document.getElementById('tasksContainer');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const taskList = document.getElementById('taskList');
+
+        loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            workerAuth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    loginContainer.classList.add('hidden');
+                    tasksContainer.classList.remove('hidden');
+                    loadTasks(userCredential.user.email);
+                })
+                .catch((error) => {
+                    alert('Login failed: ' + error.message);
+                });
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            workerAuth.signOut().then(() => {
+                tasksContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            }).catch((error) => {
+                console.error('Logout Error:', error);
+            });
+        });
+
+        function loadTasks(workerEmail) {
+            // First, get the worker's name from the worker database
+            workerDb.ref('workers').orderByChild('email').equalTo(workerEmail).once('value', (snapshot) => {
+                const workerData = snapshot.val();
+                if (workerData) {
+                    const workerName = Object.values(workerData)[0].name;
+                    
+                    // Now fetch tasks assigned to this worker from the complaints database
+                    complaintsDb.ref('wasteReports').orderByChild('assignedTo').equalTo(workerName).on('value', (snapshot) => {
+                        taskList.innerHTML = '';
+                        snapshot.forEach((childSnapshot) => {
+                            const task = childSnapshot.val();
+                            const taskId = childSnapshot.key;
+                            const taskElement = document.createElement('div');
+                            taskElement.className = 'bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300';
+                            taskElement.innerHTML = `
+                                <h3 class="font-bold text-lg text-blue-600">${task.wasteType}</h3>
+                                <p class="text-gray-700"><span class="font-semibold">Location:</span> <a href="https://www.google.com/maps/search/?api=1&query=${task.latitude},${task.longitude}" target="_blank" class="text-blue-500 hover:underline">${task.latitude}, ${task.longitude}</a></p>
+                                <p class="text-gray-700"><span class="font-semibold">Status:</span> ${task.status}</p>
+                                <button class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-300" onclick="markAsCompleted('${taskId}')">Mark as Completed</button>
+                            `;
+                            taskList.appendChild(taskElement);
+                        });
+                    });
+                }
+            });
+        }
+
+        function markAsCompleted(taskId) {
+            complaintsDb.ref(`wasteReports/${taskId}`).update({
+                status: 'completed'
+            }).then(() => {
+                console.log('Task marked as completed');
+            }).catch((error) => {
+                console.error('Error updating task: ', error);
+            });
+        }
+
+        // Check if user is already logged in
+        workerAuth.onAuthStateChanged((user) => {
+            if (user) {
+                loginContainer.classList.add('hidden');
+                tasksContainer.classList.remove('hidden');
+                loadTasks(user.email);
+            } else {
+                tasksContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
