@@ -1,134 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmartBin Selection</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/your-actual-fontawesome-kit.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="icon" href="smartbinrednobg.png" type="image/x-icon" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: "Poppins", sans-serif;
-            box-sizing: border-box;
-        }
-        body {
-            background-color: rgb(0, 0, 0);
-            color: white;
-        }
-        .container {
-            padding: 10px 10%;
-        }
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .logo {
-            width: 100px;
-            border-radius: 100%;
-        }
-        nav ul li {
-            display: inline-block;
-            list-style: none;
-            margin: 10px 20px;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 23px;
-            position: relative;
-        }
-        nav ul li a::after {
-            content: "";
-            width: 0;
-            height: 3px;
-            background: #ff0000;
-            position: absolute;
-            left: 0;
-            bottom: -6px;
-            transition: 0.2s;
-        }
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-        .header-text {
-            margin-top: 20%;
-            font-size: 30px;
-        }
-        .header-text h1 {
-            font-size: 60px;
-            margin-top: 20px;
-        }
-        .header-text h1 span {
-            color: #ff0000;
-        }
-        .selection-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            grid-gap: 40px;
-            margin-top: 50px;
-        }
-        .selection-box {
-            background: #262626;
-            padding: 40px;
-            font-size: 30px;
-            font-weight: 300;
-            border-radius: 10px;
-            transition: background 0.5s, transform 0.5s;
-            cursor: pointer;
-            text-align: center;
-        }
-        .selection-box:hover {
-            background: #ff0000;
-            transform: translateY(-10px);
-        }
-        #totalWeight {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #ff0000;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: rgb(0, 0, 0);
+        color: white;
+      }
+      .container {
+        padding: 10px 10%;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .logo {
+        width: 100px;
+        border-radius: 100%;
+      }
+      nav ul li {
+        display: inline-block;
+        list-style: none;
+        margin: 10px 20px;
+      }
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 23px;
+        position: relative;
+      }
+      nav ul li a::after {
+        content: "";
+        width: 0;
+        height: 3px;
+        background: #ff0000;
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        transition: 0.2s;
+      }
+      nav ul li a:hover::after {
+        width: 100%;
+      }
+      .header-text {
+        margin-top: 20%;
+        font-size: 30px;
+      }
+      .header-text h1 {
+        font-size: 60px;
+        margin-top: 20px;
+      }
+      .header-text h1 span {
+        color: #ff0000;
+      }
+      .selection-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-gap: 40px;
+        margin-top: 50px;
+      }
+      .selection-box {
+        background: #262626;
+        padding: 40px;
+        font-size: 30px;
+        font-weight: 300;
+        border-radius: 10px;
+        transition: background 0.5s, transform 0.5s;
+        cursor: pointer;
+        text-align: center;
+      }
+      .selection-box:hover {
+        background: #ff0000;
+        transform: translateY(-10px);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="header">
-        <div class="container">
-            <nav>
-                <img src="smartbinrednobg.png" class="logo" alt="Logo">
-                <ul>
-                    <li><a href="smartbin_select.html">Home</a></li>
-                    <li><a href="complaint.html">Complaints</a></li>
-                    <li><a href="workeraccountpage.html">Worker's Accounts</a></li>
-                </ul>
-            </nav>
-            <div class="header-text">
-                <h1>Welcome to <span>SmartBin</span> Portal</h1>
-                <p>Select a SmartBin to manage</p>
-            </div>
+      <div class="container">
+        <nav>
+          <img src="smartbinrednobg.png" class="logo" alt="Logo" />
+          <ul>
+            <li><a href="smartbin_select.html">Home</a></li>
+            <li><a href="complaint.html">Complaints</a></li>
+            <li><a href="workeraccountpage.html">Worker's Accounts</a></li>
+          </ul>
+        </nav>
+        <div class="header-text">
+          <h1>Welcome to <span>SmartBin</span> Portal</h1>
+          <p>Select a SmartBin to manage</p>
         </div>
+      </div>
     </div>
 
     <div id="smartbin-selection" class="container">
-        <h2>Available SmartBins</h2>
-        <div class="selection-container">
-            <div id="D1" class="selection-box" onclick="openSmartBin('D1')">D1</div>
-            <div id="D2" class="selection-box" onclick="openSmartBin('D2')">D2</div>
-            <div id="D3" class="selection-box" onclick="openSmartBin('D3')">D3</div>
-            <div id="D4" class="selection-box" onclick="openSmartBin('D4')">D4</div>
-        </div>
+      <h2>Available SmartBins</h2>
+      <div class="selection-container">
+        <div id="D1" class="selection-box" onclick="openSmartBin('D1')">D1</div>
+        <div id="D2" class="selection-box" onclick="openSmartBin('D2')">D2</div>
+        <div id="D3" class="selection-box" onclick="openSmartBin('D3')">D3</div>
+        <div id="D4" class="selection-box" onclick="openSmartBin('D4')">D4</div>
+      </div>
     </div>
 
-    <script>
-        function openSmartBin(binId) {
-            // Add your logic here to open the selected SmartBin
-            console.log("Opening SmartBin: " + binId);
-        }
+    <!-- Firebase SDK and your custom script -->
+    <!-- Include this section in your script -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-        // You can add more JavaScript here for additional functionality
-        // For example, to update the total weight dynamically
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBYV5EoGfd9_EB_0nyvjdnVI6MIU5unqK8",
+        authDomain: "smartbin-dcbe5.firebaseapp.com",
+        databaseURL:
+          "https://smartbin-dcbe5-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smartbin-dcbe5",
+        storageBucket: "smartbin-dcbe5.appspot.com",
+        messagingSenderId: "990234762100",
+        appId: "1:990234762100:web:4512d6d7ee59122772aa21",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Reference to the ultrasonic sensor data path in the database
+      const sensorRef = ref(database, "Sensor/Distance");
+
+      // Listen for data changes and log to the console
+      // Firebase onValue listener for real-time data updates
+      // Firebase onValue listener for real-time data updates
+      // Firebase onValue listener for real-time data updates
+      // Firebase onValue listener for real-time data updates
+      onValue(sensorRef, (snapshot) => {
+        const distance = snapshot.val();
+        console.log("Distance received from Firebase:", distance); // Debugging the received distance
+
+        // Map of SmartBin IDs to distances
+        const binData = {
+          D1: distance, // Assuming you're only getting data for D1
+          // Add other bins (D2, D3, D4) when receiving data for them
+        };
+
+        // Loop through each SmartBin and update its color based on the distance value
+        for (let binId in binData) {
+          const binDiv = document.getElementById(binId); // Select the div by ID
+          const binDistance = binData[binId];
+
+          if (binDiv) {
+            console.log(`Element for ${binId} found.`); // Confirm if element is found
+          } else {
+            console.error(`Element for ${binId} not found.`);
+            continue; // Skip if element is not found
+          }
+
+          if (binDistance !== undefined && !isNaN(binDistance)) {
+            console.log(`${binId} has a valid distance value:`, binDistance);
+            updateSmartBinColor(binDiv, parseFloat(binDistance));
+          } else {
+            console.error(`Invalid distance for ${binId}:`, binDistance);
+          }
+        }
+      });
+
+      // Function to update the SmartBin box color based on distance
+      function updateSmartBinColor(div, distance) {
+        console.log("Updating color for distance:", distance);
+
+        if (distance < 5) {
+          div.style.backgroundColor = "red"; // Bad condition
+          console.log("Set color to red");
+        } else if (distance < 15) {
+          div.style.backgroundColor = "yellow"; // Warning condition
+          console.log("Set color to yellow");
+        } else {
+          div.style.backgroundColor = "green"; // Default condition
+          console.log("Set color to default");
+        }
+      }
+
+      // Function to handle SmartBin selection
+      window.openSmartBin = function (binId) {
+        console.log("Opening SmartBin: " + binId);
+        // Redirect to the management page and pass the binId as a query parameter
+        window.location.href = `management.html?account=${binId}`;
+      };
     </script>
-</body>
+  </body>
 </html>
