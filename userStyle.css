@@ -149,6 +149,9 @@ nav ul li a:hover::after {
 #services {
   padding: 50px 0;
 }
+.service h1 {
+  font-size: 200px;
+}
 .services-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
