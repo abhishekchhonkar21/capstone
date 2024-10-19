@@ -149,59 +149,65 @@
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
 
-      // Reference to the ultrasonic sensor data path in the database
-      const sensorRef = ref(database, "Sensor/Distance");
+      // Reference to the waste level sensor data path in the database
+      const wasteLevelRef = ref(database, "/wasteBin/readings");
+
+      // Variable to store the last waste level value
+      let lastWasteLevel = null;
 
       // Listen for data changes and log to the console
-      // Firebase onValue listener for real-time data updates
-      // Firebase onValue listener for real-time data updates
-      // Firebase onValue listener for real-time data updates
-      // Firebase onValue listener for real-time data updates
-      onValue(sensorRef, (snapshot) => {
-        const distance = snapshot.val();
-        console.log("Distance received from Firebase:", distance); // Debugging the received distance
+      onValue(wasteLevelRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log("Snapshot data received:", data);
 
-        // Map of SmartBin IDs to distances
-        const binData = {
-          D1: distance, // Assuming you're only getting data for D1
-          // Add other bins (D2, D3, D4) when receiving data for them
-        };
+        // Initialize a variable to hold the most recent waste level
+        let mostRecentWasteLevel = null;
 
-        // Loop through each SmartBin and update its color based on the distance value
-        for (let binId in binData) {
-          const binDiv = document.getElementById(binId); // Select the div by ID
-          const binDistance = binData[binId];
-
-          if (binDiv) {
-            console.log(`Element for ${binId} found.`); // Confirm if element is found
-          } else {
-            console.error(`Element for ${binId} not found.`);
-            continue; // Skip if element is not found
+        // Loop through each child in the data object
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const entry = data[key];
+            // Assuming wasteLevel exists in each entry, we can pick the last one
+            mostRecentWasteLevel = entry.wasteLevel;
           }
+        }
 
-          if (binDistance !== undefined && !isNaN(binDistance)) {
-            console.log(`${binId} has a valid distance value:`, binDistance);
-            updateSmartBinColor(binDiv, parseFloat(binDistance));
-          } else {
-            console.error(`Invalid distance for ${binId}:`, binDistance);
+        // Log the most recent waste level received from Firebase
+        if (mostRecentWasteLevel !== null) {
+          console.log(
+            "Current waste level received:",
+            mostRecentWasteLevel + "%"
+          );
+
+          // Check if the waste level is new or different from the last received value
+          if (mostRecentWasteLevel !== lastWasteLevel) {
+            lastWasteLevel = mostRecentWasteLevel; // Update last waste level to the current one
+
+            // Update SmartBin color and log the color in the console
+            updateSmartBinColor(
+              document.getElementById("D1"),
+              parseFloat(mostRecentWasteLevel)
+            );
           }
+        } else {
+          console.error("Waste level is undefined or not found in Firebase.");
         }
       });
 
-      // Function to update the SmartBin box color based on distance
-      function updateSmartBinColor(div, distance) {
-        console.log("Updating color for distance:", distance);
-
-        if (distance < 5) {
-          div.style.backgroundColor = "red"; // Bad condition
-          console.log("Set color to red");
-        } else if (distance < 15) {
-          div.style.backgroundColor = "yellow"; // Warning condition
-          console.log("Set color to yellow");
+      // Function to update the SmartBin box color based on waste level
+      function updateSmartBinColor(div, wasteLevel) {
+        let color;
+        if (wasteLevel >= 75) {
+          color = "red"; // Full or critical condition
+        } else if (wasteLevel >= 30 && wasteLevel < 75) {
+          color = "yellow"; // Warning condition, moderate fill
         } else {
-          div.style.backgroundColor = "green"; // Default condition
-          console.log("Set color to default");
+          color = "green"; // Good condition, low fill
         }
+
+        div.style.backgroundColor = color;
+        console.log(`Current waste level received: "${wasteLevel}%"`);
+        console.log(`Color updated to: "${color}"`); // Log the updated color
       }
 
       // Function to handle SmartBin selection
