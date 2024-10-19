@@ -1,248 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Complaint Management Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="icon" href="smartbinrednobg.png" type="image/x-icon" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: "Poppins", sans-serif;
-            box-sizing: border-box;
-        }
-        body {
-            background-color: rgb(0, 0, 0);
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            padding: 20px 10%;
-        }
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            padding: 10px 10%;
-            background-color: #000000;
-        }
-        .logo {
-            width: 100px;
-            border-radius: 100%;
-        }
-        nav ul li {
-            display: inline-block;
-            list-style: none;
-            margin: 10px 20px;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            position: relative;
-        }
-        nav ul li a::after {
-            content: "";
-            width: 0;
-            height: 3px;
-            background: #ff0000;
-            position: absolute;
-            left: 0;
-            bottom: -6px;
-            transition: 0.2s;
-        }
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #ffffff;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #262626;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th, td {
-            border: 1px solid #444;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #333;
-            color: #ffffff;
-        }
-        
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-        .status-pending { background-color: #ffd700; color: black; }
-        .status-assigned { background-color: #87ceeb; color: black; }
-        .status-completed { background-color: #90ee90; color: black; }
-        .delete-btn, button {
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .delete-btn:hover, button:hover {
-            background-color: #b41414;
-        }
-        .complaint-image {
-            max-width: 100px;
-            max-height: 100px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.9);
-        }
-        .modal-content {
-            margin: auto;
-            display: block;
-            width: 80%;
-            max-width: 700px;
-        }
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        select {
-            padding: 5px;
-            border-radius: 5px;
-            background-color: #333;
-            color: white;
-            border: 1px solid #444;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: rgb(0, 0, 0);
+        color: white;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        padding: 20px 10%;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 10px 10%;
+        background-color: #000000;
+      }
+      .logo {
+        width: 100px;
+        border-radius: 100%;
+      }
+      nav ul li {
+        display: inline-block;
+        list-style: none;
+        margin: 10px 20px;
+      }
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        position: relative;
+      }
+      nav ul li a::after {
+        content: "";
+        width: 0;
+        height: 3px;
+        background: #ff0000;
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        transition: 0.2s;
+      }
+      nav ul li a:hover::after {
+        width: 100%;
+      }
+      h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        color: #ffffff;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #262626;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      th,
+      td {
+        border: 1px solid #444;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #333;
+        color: #ffffff;
+      }
+
+      .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: bold;
+      }
+      .status-pending {
+        background-color: #ffd700;
+        color: black;
+      }
+      .status-assigned {
+        background-color: #87ceeb;
+        color: black;
+      }
+      .status-completed {
+        background-color: #90ee90;
+        color: black;
+      }
+      .delete-btn,
+      button {
+        background-color: #ff0000;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .delete-btn:hover,
+      button:hover {
+        background-color: #b41414;
+      }
+      .complaint-image {
+        max-width: 100px;
+        max-height: 100px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+      .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+      }
+      .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      select {
+        padding: 5px;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        border: 1px solid #444;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <img src="smartbinrednobg.png" class="logo" alt="Logo">
-        <ul>
-            <li><a href="smartbin_select.html">Home</a></li>
-            <li><a href="complaint.html">Complaints</a></li>
-            <li><a href="workeraccountpage.html">Worker's Accounts</a></li>
-        </ul>
+      <img src="smartbinrednobg.png" class="logo" alt="Logo" />
+      <ul>
+        <li><a href="smartbin_select.html">Home</a></li>
+        <li><a href="complaint.html">Complaints</a></li>
+        <li><a href="workeraccountpage.html">Worker's Accounts</a></li>
+      </ul>
     </nav>
 
     <div class="container">
-        <h1>Complaint Management Dashboard</h1>
-        <table id="complaintsTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Location</th>
-                    <th>Image</th>
-                    <th>Status</th>
-                    <th>Assigned To</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="complaintsTableBody"></tbody>
-        </table>
+      <h1>Complaint Management Dashboard</h1>
+      <table id="complaintsTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Image</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="complaintsTableBody"></tbody>
+      </table>
     </div>
 
     <div id="imageModal" class="modal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="modalImage">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modalImage" />
     </div>
 
     <script>
-        // Firebase configuration for the complaints database
-        const firebaseConfigComplaints = {
-            apiKey: "AIzaSyCIJRfgkC0lbIpcaFFahZWNK4Bc7jM_d6s",
-            authDomain: "smartbinform.firebaseapp.com",
-            databaseURL: "https://smartbinform-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "smartbinform",
-            storageBucket: "smartbinform.appspot.com",
-            messagingSenderId: "345224231908",
-            appId: "1:345224231908:web:45ef4c9fefd13d53c5e5f1"
-        };
+      // Firebase configuration for the complaints database
+      const firebaseConfigComplaints = {
+        apiKey: "AIzaSyCIJRfgkC0lbIpcaFFahZWNK4Bc7jM_d6s",
+        authDomain: "smartbinform.firebaseapp.com",
+        databaseURL:
+          "https://smartbinform-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smartbinform",
+        storageBucket: "smartbinform.appspot.com",
+        messagingSenderId: "345224231908",
+        appId: "1:345224231908:web:45ef4c9fefd13d53c5e5f1",
+      };
 
-        // Firebase configuration for the workers database
-        const firebaseConfigWorkers = {
-            apiKey: "AIzaSyCRWGFko1aH0feegmASU7YeLo0OGxlpLWg",
-            authDomain: "smartbinworker.firebaseapp.com",
-            databaseURL: "https://smartbinworker-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "smartbinworker",
-            storageBucket: "smartbinworker.appspot.com",
-            messagingSenderId: "108771879383",
-            appId: "1:108771879383:web:4d032725ae37f21b8c0392"
-        };
+      // Firebase configuration for the workers database
+      const firebaseConfigWorkers = {
+        apiKey: "AIzaSyCRWGFko1aH0feegmASU7YeLo0OGxlpLWg",
+        authDomain: "smartbinworker.firebaseapp.com",
+        databaseURL:
+          "https://smartbinworker-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smartbinworker",
+        storageBucket: "smartbinworker.appspot.com",
+        messagingSenderId: "108771879383",
+        appId: "1:108771879383:web:4d032725ae37f21b8c0392",
+      };
 
-        // Initialize Firebase for complaints
-        const complaintApp = firebase.initializeApp(firebaseConfigComplaints, "complaintApp");
-        const complaintDatabase = complaintApp.database();
+      // Initialize Firebase for complaints
+      const complaintApp = firebase.initializeApp(
+        firebaseConfigComplaints,
+        "complaintApp"
+      );
+      const complaintDatabase = complaintApp.database();
 
-        // Initialize Firebase for workers
-        const workerApp = firebase.initializeApp(firebaseConfigWorkers, "workerApp");
-        const workerDatabase = workerApp.database();
+      // Initialize Firebase for workers
+      const workerApp = firebase.initializeApp(
+        firebaseConfigWorkers,
+        "workerApp"
+      );
+      const workerDatabase = workerApp.database();
 
-        // Fetch workers from the workers database
-        let workers = [];
+      // Fetch workers from the workers database
+      let workers = [];
 
-        function fetchWorkers() {
-            const workersRef = workerDatabase.ref('workers');
-            workersRef.once('value', (snapshot) => {
-                const workersData = snapshot.val();
-                workers = Object.keys(workersData).map(workerId => workersData[workerId].name);
-                fetchComplaints();  // Fetch complaints after fetching workers
-            });
-        }
+      function fetchWorkers() {
+        const workersRef = workerDatabase.ref("workers");
+        workersRef.once("value", (snapshot) => {
+          const workersData = snapshot.val();
+          workers = Object.keys(workersData).map(
+            (workerId) => workersData[workerId].name
+          );
+          fetchComplaints(); // Fetch complaints after fetching workers
+        });
+      }
 
-        // Function to fetch and display complaints from the complaints database
-        function fetchComplaints() {
-            const complaintsRef = complaintDatabase.ref('wasteReports');
-            complaintsRef.on('value', (snapshot) => {
-                const complaints = snapshot.val();
-                const tableBody = document.getElementById('complaintsTableBody');
-                tableBody.innerHTML = ''; // Clear existing rows
+      // Function to fetch and display complaints from the complaints database
+      function fetchComplaints() {
+        const complaintsRef = complaintDatabase.ref("wasteReports");
+        complaintsRef.on("value", (snapshot) => {
+          const complaints = snapshot.val();
+          const tableBody = document.getElementById("complaintsTableBody");
+          tableBody.innerHTML = ""; // Clear existing rows
 
-                for (let id in complaints) {
-                    const complaint = complaints[id];
-                    const isAssigned = complaint.status === 'assigned' ? 'disabled' : ''; // Check if the complaint is already assigned
+          for (let id in complaints) {
+            const complaint = complaints[id];
+            const isAssigned =
+              complaint.status === "assigned" ? "disabled" : ""; // Check if the complaint is already assigned
 
-                    const row = `
+            const row = `
                         <tr>
-                            <td>${new Date(complaint.timestamp).toLocaleDateString()}</td>
+                            <td>${new Date(
+                              complaint.timestamp
+                            ).toLocaleDateString()}</td>
                             <td>${complaint.wasteType}</td>
-                            <td>${complaint.latitude}, ${complaint.longitude}</td>
-                            <td>${complaint.imageUrl ? `<img src="${complaint.imageUrl}" class="complaint-image" onclick="openModal(this.src)">` : 'No image'}</td>
-                            <td><span class="status-badge status-${complaint.status || 'pending'}">${complaint.status || 'Pending'}</span></td>
+                            <td>${complaint.latitude}, ${
+              complaint.longitude
+            }</td>
+                            <td>${
+                              complaint.imageUrl
+                                ? `<img src="${complaint.imageUrl}" class="complaint-image" onclick="openModal(this.src)">`
+                                : "No image"
+                            }</td>
+                            <td><span class="status-badge status-${
+                              complaint.status || "pending"
+                            }">${complaint.status || "Pending"}</span></td>
                             <td>
                                 <select data-id="${id}" onchange="assignWorker('${id}', this.value)" ${isAssigned}>
                                     <option value="">Unassigned</option>
-                                    ${workers.map(worker => `<option value="${worker}" ${complaint.assignedTo === worker ? 'selected' : ''}>${worker}</option>`).join('')}
+                                    ${workers
+                                      .map(
+                                        (worker) =>
+                                          `<option value="${worker}" ${
+                                            complaint.assignedTo === worker
+                                              ? "selected"
+                                              : ""
+                                          }>${worker}</option>`
+                                      )
+                                      .join("")}
                                 </select>
                             </td>
                             <td>
@@ -252,68 +297,84 @@
                             </td>
                         </tr>
                     `;
-                    tableBody.innerHTML += row;
-                }
+            tableBody.innerHTML += row;
+          }
+        });
+      }
+
+      // Function to assign a worker to a complaint
+      function assignWorker(complaintId, worker) {
+        if (worker) {
+          // Update the database with the assigned worker (but don't disable the dropdown yet)
+          complaintDatabase
+            .ref(`wasteReports/${complaintId}`)
+            .update({ assignedTo: worker });
+        }
+      }
+
+      // Function to update the status of a complaint
+      function updateStatus(complaintId, status) {
+        complaintDatabase
+          .ref(`wasteReports/${complaintId}`)
+          .update({ status: status })
+          .then(() => {
+            if (status === "assigned") {
+              // Disable the dropdown after the status is set to "assigned"
+              const selectElement = document.querySelector(
+                `select[data-id='${complaintId}']`
+              );
+              if (selectElement) {
+                selectElement.disabled = true;
+              }
+
+              // Disable the Assign button after assignment
+              const assignButton = document.querySelector(
+                `button[data-assign-id='${complaintId}']`
+              );
+              if (assignButton) {
+                assignButton.disabled = true;
+              }
+            }
+          });
+      }
+
+      // Function to delete a complaint
+      function deleteComplaint(complaintId) {
+        if (
+          confirm(
+            "Are you sure you want to delete this complaint? This action cannot be undone."
+          )
+        ) {
+          complaintDatabase
+            .ref(`wasteReports/${complaintId}`)
+            .remove()
+            .then(() => {
+              console.log("Complaint successfully deleted");
+            })
+            .catch((error) => {
+              console.error("Error deleting complaint: ", error);
+              alert(
+                "An error occurred while deleting the complaint. Please try again."
+              );
             });
         }
+      }
 
-        // Function to assign a worker to a complaint
-        function assignWorker(complaintId, worker) {
-            if (worker) {
-                // Update the database with the assigned worker (but don't disable the dropdown yet)
-                complaintDatabase.ref(`wasteReports/${complaintId}`).update({ assignedTo: worker });
-            }
-        }
+      // Function to open the image modal
+      function openModal(src) {
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        modal.style.display = "block";
+        modalImg.src = src;
+      }
 
-        // Function to update the status of a complaint
-        function updateStatus(complaintId, status) {
-            complaintDatabase.ref(`wasteReports/${complaintId}`).update({ status: status })
-                .then(() => {
-                    if (status === 'assigned') {
-                        // Disable the dropdown after the status is set to "assigned"
-                        const selectElement = document.querySelector(`select[data-id='${complaintId}']`);
-                        if (selectElement) {
-                            selectElement.disabled = true;
-                        }
+      // Close the modal when clicking on <span> (x)
+      document.getElementsByClassName("close")[0].onclick = function () {
+        document.getElementById("imageModal").style.display = "none";
+      };
 
-                        // Disable the Assign button after assignment
-                        const assignButton = document.querySelector(`button[data-assign-id='${complaintId}']`);
-                        if (assignButton) {
-                            assignButton.disabled = true;
-                        }
-                    }
-                });
-        }
-
-        // Function to delete a complaint
-        function deleteComplaint(complaintId) {
-            if (confirm('Are you sure you want to delete this complaint? This action cannot be undone.')) {
-                complaintDatabase.ref(`wasteReports/${complaintId}`).remove()
-                    .then(() => {
-                        console.log("Complaint successfully deleted");
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting complaint: ", error);
-                        alert("An error occurred while deleting the complaint. Please try again.");
-                    });
-            }
-        }
-
-        // Function to open the image modal
-        function openModal(src) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            modal.style.display = "block";
-            modalImg.src = src;
-        }
-
-        // Close the modal when clicking on <span> (x)
-        document.getElementsByClassName('close')[0].onclick = function() { 
-            document.getElementById('imageModal').style.display = "none";
-        }
-
-        // Call fetchWorkers when the page loads to fetch workers first, then fetch complaints
-        document.addEventListener('DOMContentLoaded', fetchWorkers);
+      // Call fetchWorkers when the page loads to fetch workers first, then fetch complaints
+      document.addEventListener("DOMContentLoaded", fetchWorkers);
     </script>
-</body>
+  </body>
 </html>
