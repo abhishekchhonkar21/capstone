@@ -78,6 +78,12 @@
         grid-gap: 40px;
         margin-top: 50px;
       }
+      .bin-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+      }
       .selection-box {
         background: #262626;
         padding: 40px;
@@ -87,10 +93,30 @@
         transition: background 0.5s, transform 0.5s;
         cursor: pointer;
         text-align: center;
+        width: 100%;
       }
       .selection-box:hover {
         background: #ff0000;
         transform: translateY(-10px);
+      }
+      .assign-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #ff0000;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      .assign-button.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .assign-button.active:hover {
+        transform: scale(1.05);
       }
     </style>
   </head>
@@ -115,15 +141,25 @@
     <div id="smartbin-selection" class="container">
       <h2>Available SmartBins</h2>
       <div class="selection-container">
-        <div id="D1" class="selection-box" onclick="openSmartBin('D1')">D1</div>
-        <div id="D2" class="selection-box" onclick="openSmartBin('D2')">D2</div>
-        <div id="D3" class="selection-box" onclick="openSmartBin('D3')">D3</div>
-        <div id="D4" class="selection-box" onclick="openSmartBin('D4')">D4</div>
+        <div class="bin-wrapper">
+          <div id="D1" class="selection-box" onclick="openSmartBin('D1')">D1</div>
+          <button id="assign-D1" class="assign-button" onclick="assignWorker('D1')">Assign Worker</button>
+        </div>
+        <div class="bin-wrapper">
+          <div id="D2" class="selection-box" onclick="openSmartBin('D2')">D2</div>
+          <button id="assign-D2" class="assign-button" onclick="assignWorker('D2')">Assign Worker</button>
+        </div>
+        <div class="bin-wrapper">
+          <div id="D3" class="selection-box" onclick="openSmartBin('D3')">D3</div>
+          <button id="assign-D3" class="assign-button" onclick="assignWorker('D3')">Assign Worker</button>
+        </div>
+        <div class="bin-wrapper">
+          <div id="D4" class="selection-box" onclick="openSmartBin('D4')">D4</div>
+          <button id="assign-D4" class="assign-button" onclick="assignWorker('D4')">Assign Worker</button>
+        </div>
       </div>
     </div>
 
-    <!-- Firebase SDK and your custom script -->
-    <!-- Include this section in your script -->
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -131,9 +167,10 @@
         getDatabase,
         ref,
         onValue,
+        set,
       } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-      // Your web app's Firebase configuration
+      // Your existing SmartBin Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyBYV5EoGfd9_EB_0nyvjdnVI6MIU5unqK8",
         authDomain: "smartbin-dcbe5.firebaseapp.com",
@@ -145,12 +182,35 @@
         appId: "1:990234762100:web:4512d6d7ee59122772aa21",
       };
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const database = getDatabase(app);
+      // Firebase configuration for the complaints database
+      const firebaseConfigComplaints = {
+        apiKey: "AIzaSyCIJRfgkC0lbIpcaFFahZWNK4Bc7jM_d6s",
+        authDomain: "smartbinform.firebaseapp.com",
+        databaseURL: "https://smartbinform-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "smartbinform",
+        storageBucket: "smartbinform.appspot.com",
+        messagingSenderId: "345224231908",
+        appId: "1:345224231908:web:45ef4c9fefd13d53c5e5f1"
+      };
+
+      // Initialize Firebase apps
+      const smartbinApp = initializeApp(firebaseConfig, "smartbinApp");
+      const complaintsApp = initializeApp(firebaseConfigComplaints, "complaintsApp");
+
+      // Get database references
+      const smartbinDb = getDatabase(smartbinApp);
+      const complaintsDb = getDatabase(complaintsApp);
+
+      // Define fixed locations for each bin
+      const binLocations = {
+        'D1': { latitude: '3.0319924887647095', longitude: '101.77757201616854' },
+        'D2': { latitude: '3.0319924887647095', longitude: '101.77757201616854' },
+        'D3': { latitude: '3.0319924887647095', longitude: '101.77757201616854' },
+        'D4': { latitude: '3.0319924887647095', longitude: '101.77757201616854' }
+      };
 
       // Reference to the waste level sensor data path in the database
-      const wasteLevelRef = ref(database, "/wasteBin/readings");
+      const wasteLevelRef = ref(smartbinDb, "/wasteBin/readings");
 
       // Variable to store the last waste level value
       let lastWasteLevel = null;
@@ -160,30 +220,20 @@
         const data = snapshot.val();
         console.log("Snapshot data received:", data);
 
-        // Initialize a variable to hold the most recent waste level
         let mostRecentWasteLevel = null;
 
-        // Loop through each child in the data object
         for (const key in data) {
           if (data.hasOwnProperty(key)) {
             const entry = data[key];
-            // Assuming wasteLevel exists in each entry, we can pick the last one
             mostRecentWasteLevel = entry.wasteLevel;
           }
         }
 
-        // Log the most recent waste level received from Firebase
         if (mostRecentWasteLevel !== null) {
-          console.log(
-            "Current waste level received:",
-            mostRecentWasteLevel + "%"
-          );
+          console.log("Current waste level received:", mostRecentWasteLevel + "%");
 
-          // Check if the waste level is new or different from the last received value
           if (mostRecentWasteLevel !== lastWasteLevel) {
-            lastWasteLevel = mostRecentWasteLevel; // Update last waste level to the current one
-
-            // Update SmartBin color and log the color in the console
+            lastWasteLevel = mostRecentWasteLevel;
             updateSmartBinColor(
               document.getElementById("D1"),
               parseFloat(mostRecentWasteLevel)
@@ -194,27 +244,61 @@
         }
       });
 
-      // Function to update the SmartBin box color based on waste level
+      // Function to update the SmartBin box color and assign button state
       function updateSmartBinColor(div, wasteLevel) {
+        const binId = div.id;
+        const assignButton = document.getElementById(`assign-${binId}`);
         let color;
-        if (wasteLevel >= 75) {
-          color = "red"; // Full or critical condition
-        } else if (wasteLevel >= 30 && wasteLevel < 75) {
-          color = "yellow"; // Warning condition, moderate fill
+        
+        if (wasteLevel >= 70) {
+          color = "red";
+          assignButton.classList.add('active');
+        } else if (wasteLevel >= 30 && wasteLevel < 70) {
+          color = "#FEBE10";
+          assignButton.classList.remove('active');
         } else {
-          color = "green"; // Good condition, low fill
+          color = "green";
+          assignButton.classList.remove('active');
         }
 
         div.style.backgroundColor = color;
         console.log(`Current waste level received: "${wasteLevel}%"`);
-        console.log(`Color updated to: "${color}"`); // Log the updated color
+        console.log(`Color updated to: "${color}"`);
       }
 
-      // Function to handle SmartBin selection
+      // Function to create a complaint in the complaints database
+      async function createComplaint(binId) {
+        const complaintRef = ref(complaintsDb, 'wasteReports/' + Date.now());
+        
+        const complaintData = {
+          timestamp: Date.now(),
+          wasteType: `SmartBin ${binId}`,
+          latitude: binLocations[binId].latitude,
+          longitude: binLocations[binId].longitude,
+          imageUrl: "smartbinrednobg.png", // Your SmartBin logo
+          status: "pending",
+          assignedTo: "",
+        };
+
+        try {
+          await set(complaintRef, complaintData);
+          console.log("Complaint created successfully for bin:", binId);
+          alert("Assignment request created successfully!");
+        } catch (error) {
+          console.error("Error creating complaint:", error);
+          alert("Error creating assignment request. Please try again.");
+        }
+      }
+
+      // Make functions available to window object for HTML onclick handlers
       window.openSmartBin = function (binId) {
         console.log("Opening SmartBin: " + binId);
-        // Redirect to the management page and pass the binId as a query parameter
         window.location.href = `management.html?account=${binId}`;
+      };
+
+      window.assignWorker = function (binId) {
+        console.log("Creating assignment request for bin: " + binId);
+        createComplaint(binId);
       };
     </script>
   </body>
