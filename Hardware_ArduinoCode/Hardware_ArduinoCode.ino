@@ -35,7 +35,7 @@ long durationWaste, distanceWaste;
 long durationLid, distanceLid;
 int wasteLevel;
 unsigned long previousMillis = 0;
-const long interval = 30000; // Send data every 30 seconds
+const long interval = 10000; // Send data every 10 seconds
 
 void setup() {
   Serial.begin(115200);
