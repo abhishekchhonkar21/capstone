@@ -36,19 +36,6 @@ The system consists of the following components:
 - Firebase Realtime Database
 - HTML, CSS, and JavaScript (for Web Portal)
 
-### Steps to Set Up
-1. **Assemble the Hardware**: Connect ESP32 with sensors, servo motor, LCD, and power components.
-2. **Flash the ESP32 Code**:
-   - Install the ESP32 board in Arduino IDE.
-   - Upload the firmware containing Firebase and sensor logic (code provided in `src/` folder).
-3. **Set Up Firebase**:
-   - Create a Firebase project.
-   - Set up the Realtime Database and obtain API credentials.
-   - Update the credentials in the ESP32 firmware.
-4. **Deploy the Web Portal**:
-   - Host the website on Firebase Hosting or a local server.
-   - Configure it to fetch and display data from Firebase.
-
 ## Usage
 1. **Automated Bin Monitoring**: The system continuously updates bin fill levels in real-time.
 2. **Automatic Lid Operation**: The bin opens automatically when a user approaches.
